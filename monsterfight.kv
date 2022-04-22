@@ -1,20 +1,50 @@
-MainWidget:
+MenuScreen:
 
-<MainWidget>:
-    orientation : "vertical"
-    Label:
-        size_hint: 1, None
-        size: 200, 200
-        pos: 200, 200
-        canvas:
-            Color:
-                rgba: 1, 0, 1, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-    BoxLayout:
+<MenuScreen>:
+    MainWidget:
         orientation : "vertical"
-        AttacksButton:
-        MagicButton:
-        ObjectButton:
-        FleeButton:
+        RelativeLayout:
+            Image:
+                source: root.Ennemy_img
+            Image:
+                source: root.Effect_img
+        RelativeLayout:
+            MenuPlayer:
+
+                orientation : "vertical"
+                AttacksButton:
+                    id : Attacks
+                MagicButton:
+                    id : Magics
+                    on_press: root.manager.current = 'magic'
+                ObjectButton:
+                    id : Objects
+                FleeButton:
+                    id : Flee
+
+<MagicScreen>:
+    MainWidget:
+        orientation : "vertical"
+        RelativeLayout:
+            Image:
+                id: Ennemy_img
+                source: root.Ennemy_img
+            Image:
+                id: Effect_spell
+                source: root.Effect_img
+        RelativeLayout:
+            MenuPlayer:
+
+                orientation : "vertical"
+                Button:
+                    text: "Menu"
+                    on_press: root.manager.current = 'menu'
+                Button:
+                    text: "Fireball"
+                    on_press: root.on_spell_pressed()
+                Button:
+                    text: "Healing"
+                    on_press: root.manager.current = 'menu'
+                Button:
+                    text: "Heat up"
+                    on_press: root.manager.current = 'menu'
