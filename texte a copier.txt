@@ -1,0 +1,27 @@
+<MagicMenu>:
+    BoxLayout:
+        orientation : "vertical"
+            Button:
+                text: "Menu"
+            Button:
+                text: "Fireball"
+            Button:
+                text: "Healing"
+            Button:
+                text: "tornado"
+
+
+<MenuFull>:
+    do_default_tab: False
+        TabbedPanelItem:
+            text: "Attaque"
+            MainWidget:
+        TabbedPanelItem
+            text: "Magic"
+            MagicMenu:
+        TabbedPanelItem
+            text: "Objets"
+            AnchorLayoutExemple:
+        TabbedPanelItem
+            text: "Fuite"
+            GridLayoutExemple:
