@@ -2,6 +2,7 @@ MenuScreen:
 
 
 <MenuScreen>:
+    on_pre_enter: root.reset_game_won()
     Button:
         text: "FIGHT ! "
         on_press: root.manager.current = 'combat'
@@ -10,6 +11,20 @@ MenuScreen:
 <FightScreen>:
     MainWidget:
 
+<GameOverScreen>:
+    on_pre_enter: root.game_over_sound.play(), root.reset_game_over()
+    on_leave: root.game_over_sound.stop()
+    RelativeLayout:
+        Label:
+            text: "GAME OVER"
+            color: 1, 0, 0
+            font_size: dp(100)
+            font_name: "fonts/Dragon_Fire.otf"
+        Button:
+            size_hint: 0.2, 0.1
+            pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+            text: "TRY AGAIN"
+            on_release: root.manager.current = 'menu'
 
 <MainWidget>:
     BoxLayout:
@@ -55,6 +70,14 @@ MenuScreen:
                                 source: 'images/red.png'
                     Label :
                         text : " MP : "
+                    ProgressBar:
+                        size_hint: (root.hero_mp - root.hero_mp_lost) / root.hero_mp, 0.1
+                        canvas:
+                            BorderImage:
+                                border: (12, 12, 12, 12)
+                                pos: self.x, self.center_y - 12
+                                size: self.width, 24
+                                source: 'images/blue.png'
                     Label :
                         text : "LIMIT : "
 
@@ -79,10 +102,10 @@ MenuScreen:
     orientation : "vertical"
     Button:
         text: "Fireball"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_fire_pressed()
+        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_fire_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
     Button:
         text: "Healing"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed()
+        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
     Button:
         text: "tornado"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed()
+        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
