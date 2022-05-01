@@ -32,6 +32,7 @@ MenuScreen:
         BoxLayout:
             size_hint: 1, 0.1
             ProgressBar:
+                value: root.hero_xp
         RelativeLayout:
             Image:
                 id: Ennemy_img
@@ -52,8 +53,11 @@ MenuScreen:
             MenuFull:
             PlayerInfo:
                 orientation : "horizontal"
-                Image:
-                    source : 'images/mage.png'
+                RelativeLayout:
+                    Image:
+                        source : 'images/mage.png'
+                    Image:
+                        source : root.monster_attack_effect
                 BoxLayout:
                     orientation: "vertical"
                     Label :
@@ -79,7 +83,7 @@ MenuScreen:
                                 size: self.width, 24
                                 source: 'images/blue.png'
                     Label :
-                        text : "LIMIT : "
+                        text : "LVL : " + str(root.hero_lvl)
 
 
 
@@ -87,12 +91,14 @@ MenuScreen:
     do_default_tab: False
     TabbedPanelItem:
         text: "Attaque"
+        AttacksButton:
+            on_press: self.parent.parent.parent.parent.parent.on_attack(), self.parent.parent.parent.parent.parent.parent.check_game_end()
     TabbedPanelItem
         text: "Magic"
         MagicMenu:
     TabbedPanelItem
         text: "Objets"
-        MagicMenu:
+        ObjectMenu:
     TabbedPanelItem
         text: "Fuite"
         MagicMenu:
@@ -108,4 +114,17 @@ MenuScreen:
         on_press: self.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
     Button:
         text: "tornado"
+        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+
+
+<ObjectMenu>:
+    orientation : "vertical"
+    Button:
+        text: "Healing Potion"
+        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_fire_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+    Button:
+        text: "Mana Potion"
+        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+    Button:
+        text: "Explosive Potion"
         on_press: self.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
