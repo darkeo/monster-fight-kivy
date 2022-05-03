@@ -50,7 +50,14 @@ MenuScreen:
                     source: 'images/red.png'
         BoxLayout:
             orientation: "horizontal"
-            MenuFull:
+            RelativeLayout:
+                MenuFull:
+                Button:
+                    size_hint: root.ennemy_turn, root.ennemy_turn
+                    text: "ENNEMY TURN"
+                    size: 0, 0
+                    opacity: 0
+                    disabled: True
             PlayerInfo:
                 orientation : "horizontal"
                 RelativeLayout:
@@ -91,8 +98,10 @@ MenuScreen:
     do_default_tab: False
     TabbedPanelItem:
         text: "Attaque"
-        AttacksButton:
-            on_press: self.parent.parent.parent.parent.parent.on_attack(), self.parent.parent.parent.parent.parent.parent.check_game_end()
+        Button:
+            text: "Attack"
+            disabled: True if root.ennemy_turn == True else False
+            on_press: root.ennemy_turn_on(), self.parent.parent.parent.parent.parent.parent.on_attack(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
     TabbedPanelItem
         text: "Magic"
         MagicMenu:
@@ -108,23 +117,23 @@ MenuScreen:
     orientation : "vertical"
     Button:
         text: "Fireball"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_fire_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_fire_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()
     Button:
         text: "Healing"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()
     Button:
         text: "tornado"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()
 
 
 <ObjectMenu>:
     orientation : "vertical"
     Button:
         text: "Healing Potion"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_fire_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_fire_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()
     Button:
         text: "Mana Potion"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()
     Button:
         text: "Explosive Potion"
-        on_press: self.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed(), self.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()

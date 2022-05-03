@@ -9,12 +9,13 @@ from kivy.uix.widget import Widget
 from kivy.uix.tabbedpanel import TabbedPanel
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition, NoTransition, CardTransition, SwapTransition, \
     FadeTransition, WipeTransition, FallOutTransition, RiseInTransition
-from kivy.properties import StringProperty, NumericProperty, ObjectProperty
+from kivy.properties import StringProperty, NumericProperty, ObjectProperty, BooleanProperty
 from kivy.core.audio import SoundLoader
 import time
 
 game_won = False
 game_over = False
+disabled_time = 1.5
 
 
 class MainWidget(BoxLayout):
@@ -36,6 +37,7 @@ class MainWidget(BoxLayout):
     next_level = NumericProperty(100)
     hp_left_ratio = NumericProperty(1)
     monster_attack_effect = StringProperty("images/void.png")
+    ennemy_turn = NumericProperty(0)
 
     lvl_up_sound = None
     fizzle_sound = None
@@ -49,7 +51,6 @@ class MainWidget(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.init_audio()
-
 
     def init_audio(self):
         self.lvl_up_sound = SoundLoader.load("audio/lvlup.wav")
@@ -84,15 +85,15 @@ class MainWidget(BoxLayout):
         self.hero_mp = 100
         self.hero_mp_lost = 0
         self.hp_left_ratio = 1
+        self.ennemy_turn = 0
 
     def spell_effect_reset(self):
         self.ids.Effect_spell.source = "images/void.png"
         self.monster_attack_effect = "images/void.png"
 
-    def monster_turn(self, dt):
+    def check_lifes_totals(self):
         global game_won
         global game_over
-        self.ids.Effect_spell.source = "images/void.png"
         if self.monster_hp_lost >= self.monster_hp:
             self.victory_sound.play()
             game_won = True
@@ -105,27 +106,34 @@ class MainWidget(BoxLayout):
         elif self.hero_hp_lost >= self.hero_hp:
             game_over = True
             self.reset_all()
-        else:
-            self.hero_hp_lost += 10
-            self.monster_attack_effect = "images/slime_spit.png"
+
+    def monster_turn(self, dt):
+        self.ids.Effect_spell.source = "images/void.png"
+        self.hero_hp_lost += 10
+        self.monster_attack_effect = "images/slime_spit.png"
+        self.ennemy_turn = 0
 
     def on_attack(self):
+        self.ennemy_turn = 1
         self.spell_effect_reset()
         self.sword_sound.play()
         self.ids.Effect_spell.source = "images/slash.png"
         self.monster_hp_lost += 10
-        Clock.schedule_once(self.monster_turn, 1.5)
+        self.check_lifes_totals()
+        Clock.schedule_once(self.monster_turn, disabled_time)
 
     def on_spell_fire_pressed(self):
         self.spell_effect_reset()
         mp_cost = 35
         if self.hero_mp - self.hero_mp_lost >= mp_cost:
+            self.ennemy_turn = 1
             self.fire_sound.play()
             self.ids.Effect_spell.source = "images/fireball.png"
             self.monster_hp_lost += 30
             self.hero_mp_lost += 30
+            self.check_lifes_totals()
             # self.monster_hp_left_ratio = (self.monster_hp - self.hp_lost) / self.monster_hp
-            Clock.schedule_once(self.monster_turn, 1.5)
+            Clock.schedule_once(self.monster_turn, disabled_time)
 
         else:
             self.fizzle_sound.play()
@@ -134,11 +142,13 @@ class MainWidget(BoxLayout):
         self.spell_effect_reset()
         mp_cost = 20
         if self.hero_mp - self.hero_mp_lost >= mp_cost:
+            self.ennemy_turn = 1
             self.wind_sound.play()
             self.ids.Effect_spell.source = "images/tornado.png"
             self.hero_hp_lost += 20
             self.hero_mp_lost += 20
-            Clock.schedule_once(self.monster_turn, 1.5)
+            self.check_lifes_totals()
+            Clock.schedule_once(self.monster_turn, disabled_time)
         else:
             self.fizzle_sound.play()
 
@@ -146,11 +156,13 @@ class MainWidget(BoxLayout):
         self.spell_effect_reset()
         mp_cost = 20
         if self.hero_mp - self.hero_mp_lost >= mp_cost:
+            self.ennemy_turn = 1
             self.heal_sound.play()
             self.monster_attack_effect = "images/heal.png"
             self.hero_hp_lost -= 20
             self.hero_mp_lost += mp_cost
-            Clock.schedule_once(self.monster_turn, 1.5)
+            self.check_lifes_totals()
+            Clock.schedule_once(self.monster_turn, disabled_time)
         else:
             self.fizzle_sound.play()
 
@@ -165,7 +177,16 @@ class AllScreen(Screen):
 
 
 class MenuFull(TabbedPanel):
-    pass
+    ennemy_turn = BooleanProperty(False)
+
+    def ennemy_turn_on(self):
+        self.ennemy_turn = 1
+        Clock.schedule_once(self.ennemy_turn_off, 1.5)
+
+    def ennemy_turn_off(self, dt):
+        self.ennemy_turn = 0
+
+
 
 
 class PlayerInfo(BoxLayout):
@@ -222,8 +243,8 @@ class TryAgainButton(Button):
     pass
 
 
-class AttacksButton(Button):
-    text = "Attack"
+class ActionButton(Button):
+    pass
 
 
 class MagicButton(Button):
