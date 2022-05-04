@@ -1,3 +1,4 @@
+import kivy
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.lang import Builder
@@ -38,7 +39,13 @@ class MainWidget(BoxLayout):
     hp_left_ratio = NumericProperty(1)
     monster_attack_effect = StringProperty("images/void.png")
     ennemy_turn = NumericProperty(0)
+    object_1_qty = NumericProperty(3)
+    object_2_qty = NumericProperty(3)
+    object_3_qty = NumericProperty(3)
 
+
+
+    spit_sound = None
     lvl_up_sound = None
     fizzle_sound = None
     game_over_sound = None
@@ -53,6 +60,7 @@ class MainWidget(BoxLayout):
         self.init_audio()
 
     def init_audio(self):
+        self.spit_sound = SoundLoader.load("audio/spit.wav")
         self.lvl_up_sound = SoundLoader.load("audio/lvlup.wav")
         self.fizzle_sound = SoundLoader.load("audio/Fizzle.wav")
         self.sword_sound = SoundLoader.load("audio/sword.wav")
@@ -62,6 +70,7 @@ class MainWidget(BoxLayout):
         self.victory_sound = SoundLoader.load("audio/victory.wav")
         self.game_over_sound = SoundLoader.load("audio/Game_over.wav")
 
+        self.spit_sound.volume = 3
         self.lvl_up_sound.volume = 3
         self.sword_sound.volume = 5
         self.fire_sound.volume = 3
@@ -110,6 +119,7 @@ class MainWidget(BoxLayout):
     def monster_turn(self, dt):
         self.ids.Effect_spell.source = "images/void.png"
         self.hero_hp_lost += 10
+        self.spit_sound.play()
         self.monster_attack_effect = "images/slime_spit.png"
         self.ennemy_turn = 0
 
@@ -166,6 +176,49 @@ class MainWidget(BoxLayout):
         else:
             self.fizzle_sound.play()
 
+    def on_object_1_pressed(self):
+        self.spell_effect_reset()
+        if self.object_1_qty > 0:
+            self.ennemy_turn = 1
+            self.heal_sound.play()
+            self.monster_attack_effect = "images/heal_potion.png"
+            self.hero_hp_lost -= 30
+            self.object_1_qty -= 1
+            self.check_lifes_totals()
+            Clock.schedule_once(self.monster_turn, disabled_time)
+        else:
+            self.fizzle_sound.play()
+
+    def on_object_2_pressed(self):
+        self.spell_effect_reset()
+        if self.object_2_qty > 0:
+            self.ennemy_turn = 1
+            self.heal_sound.play()
+            self.monster_attack_effect = "images/mana_potion.png"
+            self.hero_mp_lost -= 20
+            self.object_2_qty -= 1
+            self.check_lifes_totals()
+            Clock.schedule_once(self.monster_turn, disabled_time)
+        else:
+            self.fizzle_sound.play()
+
+    def on_object_3_pressed(self):
+        self.spell_effect_reset()
+        if self.object_3_qty > 0:
+            self.ennemy_turn = 1
+            self.fire_sound.play()
+            self.ids.Effect_spell.source = "images/explosion.png"
+            self.monster_hp_lost += 35
+            self.object_3_qty -= 1
+            self.check_lifes_totals()
+            Clock.schedule_once(self.monster_turn, disabled_time)
+        else:
+            self.fizzle_sound.play()
+
+    def some_method_to_change_object_button_text(self):
+        app = kivy.app.App.get_running_app()
+        app.root.ids.menu_full.ids.object_menu.ids.object_3.text = 'new'
+
 
 class AllScreen(Screen):
 
@@ -188,7 +241,6 @@ class MenuFull(TabbedPanel):
 
 
 
-
 class PlayerInfo(BoxLayout):
     pass
 
@@ -198,7 +250,21 @@ class MagicMenu(BoxLayout):
 
 
 class ObjectMenu(BoxLayout):
-    pass
+    object_1_qty = NumericProperty(3)
+    object_2_qty = NumericProperty(3)
+    object_3_qty = NumericProperty(3)
+
+    def on_object_3_pressed(self):
+        if self.object_3_qty > 0:
+            self.object_3_qty -= 1
+
+    def on_object_2_pressed(self):
+        if self.object_2_qty > 0:
+            self.object_2_qty -= 1
+
+    def on_object_1_pressed(self):
+        if self.object_1_qty > 0:
+            self.object_1_qty -= 1
 
 
 class MenuScreen(AllScreen):

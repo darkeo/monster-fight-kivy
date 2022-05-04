@@ -52,6 +52,7 @@ MenuScreen:
             orientation: "horizontal"
             RelativeLayout:
                 MenuFull:
+                    id: menu_full
                 Button:
                     size_hint: root.ennemy_turn, root.ennemy_turn
                     text: "ENNEMY TURN"
@@ -108,6 +109,7 @@ MenuScreen:
     TabbedPanelItem
         text: "Objets"
         ObjectMenu:
+            id: object_menu
     TabbedPanelItem
         text: "Fuite"
         MagicMenu:
@@ -128,12 +130,31 @@ MenuScreen:
 
 <ObjectMenu>:
     orientation : "vertical"
-    Button:
-        text: "Healing Potion"
-        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_fire_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()
-    Button:
-        text: "Mana Potion"
-        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_heal_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()
-    Button:
-        text: "Explosive Potion"
-        on_press: self.parent.parent.parent.parent.parent.parent.parent.on_spell_wind_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end()
+    BoxLayout:
+        Button:
+            text: "Healing Potion"
+            on_press: self.parent.parent.parent.parent.parent.parent.parent.parent.on_object_1_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end(), root.on_object_1_pressed()
+        Button:
+            disabled: True
+            disabled_color: 1, 1, 1, 1
+            size_hint: 0.2, 1
+            text: "x" + str(root.object_1_qty)
+    BoxLayout:
+        Button:
+            text: "Mana Potion"
+            on_press: self.parent.parent.parent.parent.parent.parent.parent.parent.on_object_2_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end(), root.on_object_2_pressed()
+        Button:
+            disabled: True
+            disabled_color: 1, 1, 1, 1
+            size_hint: 0.2, 1
+            text: "x" + str(root.object_2_qty)
+    BoxLayout:
+        Button:
+            text: "Explosive Potion"
+            on_press: self.parent.parent.parent.parent.parent.parent.parent.parent.on_object_3_pressed(), self.parent.parent.parent.parent.parent.parent.parent.parent.parent.check_game_end(), root.on_object_3_pressed()
+        Button:
+            id : object_3
+            disabled: True
+            disabled_color: 1, 1, 1, 1
+            size_hint: 0.2, 1
+            text: "x" + str(root.object_3_qty)
